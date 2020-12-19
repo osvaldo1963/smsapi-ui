@@ -1,13 +1,26 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { BrowserRouter, Route } from 'react-router-dom'
 import './index.css';
-import App from './App';
 import reportWebVitals from './reportWebVitals';
+import 'semantic-ui-css/semantic.min.css'
+
+import Login from './pages/Login'
+import Home from './pages/Home'
+import { Provider } from 'mobx-react';
+import navbarStore from './stores/NavbarStore';
 
 ReactDOM.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
+  <Provider navbarStore={navbarStore}>
+    <React.StrictMode>
+      <BrowserRouter>
+        <div>
+          <Route path="/" exact component={Login}/>
+          <Route path="/home" exact component={Home} />
+        </div>
+      </BrowserRouter>
+    </React.StrictMode>
+  </Provider>,
   document.getElementById('root')
 );
 
