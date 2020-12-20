@@ -19,6 +19,9 @@ class home extends React.Component {
             return <User />
         } else if(nav.currentTab === "Groups") {
             return <Groups />
+        } else if(nav.currentTab === "LogOut") {
+            this.props.history.push('/')
+            localStorage.clear()
         }
     }
     render() {
