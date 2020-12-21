@@ -24,6 +24,7 @@ class Login extends React.Component {
             var auth = new Auth()
             var response = await auth.Login(this.state.email, this.state.password)
             var  { status } = response
+            console.log(status)
             if(status === 200) this.props.history.push('/home')
         } catch(error) {
             console.log("error on request "+error)

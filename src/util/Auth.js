@@ -3,7 +3,8 @@ import { url } from './Connection'
 
 export default class Auth {
     saveSession(data) {
-        localStorage.setItem("session", data.user)
+        console.log(JSON.stringify(data.user))
+        localStorage.setItem("session", JSON.stringify(data.user))
     }
     checkSession() {
         var session = localStorage.getItem("session")

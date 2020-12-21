@@ -1,9 +1,11 @@
 import React from 'react'
 import { Grid, Table, Button, Form, Input, Modal, Select } from 'semantic-ui-react'
 import Department from '../util/Depar'
+import Program from '../util/Program'
 import Users from '../util/Users'
 const user = new Users() 
 const depar = new Department()
+const program = new Program()
 
 class User extends React.Component {
     constructor(props) {
@@ -12,15 +14,22 @@ class User extends React.Component {
             openmodal: false, 
             search: '', 
             users : [], 
-            modelForm: {}
+            modelForm: {}, 
+            department: [], 
+            program: []
         }
         this.addUserModal   = this.addUserModal.bind(this)
         this.searchOnChange = this.searchOnChange.bind(this)
         this.fetchusers     = this.fetchusers.bind(this)
         this.modalForm      = this.modalForm.bind(this)
+        this.fetchDepoop    = this.fetchDepoop.bind(this)
+        this.selectForm     = this.selectForm.bind(this)
+        this.submit         = this.submit.bind(this)
+        this.delete         = this.delete.bind(this)
     }
     componentDidMount() {
        this.fetchusers()
+       this.fetchDepoop()
     }
     async fetchusers() { 
         try {
@@ -28,10 +37,23 @@ class User extends React.Component {
             this.setState({
                 users: result.result
             })
-            var session = localStorage.getItem("session")
-            var deparments = await depar.fetchAll()
+            
         } catch(error) { console.log(error) }
         
+    }
+    async fetchDepoop() {
+        try {
+            var session = localStorage.getItem("session")
+            var json =JSON.parse(session)
+
+            var deparments = await depar.fetchAll(json.user_id, json.session)
+            var programs   = await program.fetchAll(json.user_id, json.session)
+            console.log(programs)
+            this.setState({
+                department: deparments, 
+                program: programs
+            })
+        } catch(error) { console.log(error) }
     }
     addUserModal() {
         if(this.state.openmodal) {
@@ -58,7 +80,34 @@ class User extends React.Component {
         this.setState({ 
             modalForm : this.state.modelForm
         })
-    
+    }
+
+    selectForm(e, value) {
+        var keydic = value.id
+        var object = value.value
+        this.state.modelForm[keydic] = object
+
+        this.setState({ 
+            modalForm : this.state.modelForm
+        })
+        console.log(this.state.modelForm)
+    }
+
+    async submit() {
+        
+        try {
+            var result = await user.createUser(this.state.modelForm)
+            if(result.code === 200) this.fetchusers()
+            this.setState({
+                openmodal: false
+            })
+        } catch(error) {console.log(error)}
+    }
+    async delete(id) {
+        try {
+            var result = await user.deleteUser(id)
+            if(result.code=== 200) this.fetchusers()
+        } catch(error) {console.log(error)}
     }
 
     render() {
@@ -83,6 +132,7 @@ class User extends React.Component {
                                     <Table.HeaderCell>E-mail address</Table.HeaderCell>
                                     <Table.HeaderCell>Program</Table.HeaderCell>
                                     <Table.HeaderCell>Department</Table.HeaderCell>
+                                    <Table.HeaderCell>Actions</Table.HeaderCell>
                                 </Table.Row>
                             </Table.Header>
                             <Table.Body>
@@ -90,10 +140,11 @@ class User extends React.Component {
                                     this.state.users.map((each, index) => (
                                         <Table.Row key={index}>
                                             <Table.Cell>{each.firstname}</Table.Cell>
-                                            <Table.Cell></Table.Cell>
+                                            <Table.Cell>{each.phone}</Table.Cell>
                                             <Table.Cell>{each.email}</Table.Cell>
                                             <Table.Cell>{each.program_id.program}</Table.Cell>
                                             <Table.Cell>{each.department_id.department}</Table.Cell>
+                                            <Table.Cell><Button onClick={() => {this.delete(each.id)}}>delete</Button></Table.Cell>
                                         </Table.Row>
                                     ))
                                 }
@@ -133,11 +184,26 @@ class User extends React.Component {
                             </Form.Group>
                             <Form.Group widths='equal'>
                                 <Form.Field 
+                                    id="program"
                                     control={Select}
+                                    onChange={this.selectForm}
+                                    options={this.state.program}
                                     placeholder="Program" />
                                 <Form.Field 
+                                    id="department"
                                     control={Select}
+                                    onChange={this.selectForm}
+                                    options={this.state.department}
                                     placeholder="Department" />
+                                <Form.Field 
+                                    id="type"
+                                    control={Select}
+                                    onChange={this.selectForm}
+                                    options={[
+                                        {key: 0, text: "admin", value: "admin"},
+                                        {key: 1, text: "user", value: "user"},
+                                    ]}
+                                    placeholder="type" />
                             </Form.Group>
                         </Form>
                         </Modal.Description>
@@ -145,7 +211,7 @@ class User extends React.Component {
                     </Modal.Content>
                     <Modal.Actions>
                         <Button color='red' onClick={this.addUserModal}>Cancel</Button>
-                        <Button>Submit</Button>
+                        <Button onClick={this.submit}>Submit</Button>
                     </Modal.Actions>
                 </Modal>
             </div>
