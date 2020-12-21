@@ -31,4 +31,14 @@ export default class Users {
             } catch(error) { reject(error) }
         })
     }
+    async sendMessage(parameters) {
+        try {
+            var session = localStorage.getItem("session")
+            var json =JSON.parse(session)
+            var {numbers, message} = parameters
+            var result = await axios.post(url+"/api/1/sms?numbers="+numbers+"&session="+json.session+"&message="+message+"&userid="+json.user_id)
+            console.log(result.data)
+            
+        } catch(error) {console.log(error)}
+    }
 }

@@ -3,8 +3,8 @@ import { Grid, Table, Button, Form, Input, Modal, Select } from 'semantic-ui-rea
 import Department from '../util/Depar'
 import Program from '../util/Program'
 import Users from '../util/Users'
-const user = new Users() 
-const depar = new Department()
+const user    = new Users() 
+const depar   = new Department()
 const program = new Program()
 
 class User extends React.Component {

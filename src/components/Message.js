@@ -1,5 +1,6 @@
 import React from 'react'
 import { Button, Form, Select, TextArea, Table, Checkbox, Segment } from 'semantic-ui-react'
+import Users from '../util/Users'
 
 const program = [
     { key: 'ph', text: 'none', value: 'none' },
@@ -18,6 +19,7 @@ const data = [
     {"name": "daniel", "phone":"9717707804", "email": "sdsd", "program":"shelter", "deparrment": "supervisor"}, 
     {"name": "julia", "phone":"9717707804", "email": "sdsd", "program":"shelter", "deparrment": "supervisor"}
 ]
+const user = new Users()
 class Message extends React.Component {
     
     constructor(props) {
@@ -27,27 +29,48 @@ class Message extends React.Component {
             selected: [], 
             message : '', 
             program : '', 
-            department : ''
+            department : '', 
+            users: []
         }
         this.onChangeSearch  = this.onChangeSearch.bind(this)
         this.onChangeMessage = this.onChangeMessage.bind(this)
         this.onSendMessage   = this.onSendMessage.bind(this)
         this.onChangePro     = this.onChangePro.bind(this)
         this.onChangeDep     = this.onChangeDep.bind(this)
+        this.fetchUsers      = this.fetchUsers.bind(this)
+        
     }
-    onChangeSearch(e, data) {
+    componentDidMount() {
+        this.fetchUsers()
+    }
+    async fetchUsers() {
+        try {
+            var {search, program, department} =  this.state
+            var result = await user.fetchUsers(search, program, department)
+            this.setState({
+                users: result.result
+            })
+        } catch(error) { console.log(error) }
+    }
+    async onChangeSearch(e, data) {
         this.setState({
             search: data.value
         })
+        this.fetchUsers()
     }
     onChangeMessage(e, data) {
         this.setState({
             message: data.value
         })
-        console.log(this.state.message)
+
     }
     onSendMessage() {
-        console.log(Select.program)
+        var number = ""
+        this.state.selected.map((each) => {
+            number = number + each.phone+", "
+        })
+        user.sendMessage({numbers: number, message: this.state.message})
+       
     }
     onChangePro(e, data) {
         this.setState({
@@ -100,7 +123,7 @@ class Message extends React.Component {
                                 
                             <Table.Body>
                                 {
-                                    data.map((each, index) => (
+                                    this.state.users.map((each, index) => (
                                         <Table.Row key={index}>
                                             <Table.Cell>
                                                 <Checkbox 
@@ -121,11 +144,11 @@ class Message extends React.Component {
                                                         }
                                                     }} />
                                             </Table.Cell>
-                                            <Table.Cell>{each.name}</Table.Cell>
+                                            <Table.Cell>{each.firstname}</Table.Cell>
                                             <Table.Cell>{each.phone}</Table.Cell>
                                             <Table.Cell>{each.email}</Table.Cell>
-                                            <Table.Cell>{each.program}</Table.Cell>
-                                            <Table.Cell>{each.deparrment}</Table.Cell>
+                                            <Table.Cell>{each.program_id.program}</Table.Cell>
+                                            <Table.Cell>{each.department_id.department}</Table.Cell>
                                         </Table.Row>
                                     ))
                                 }
