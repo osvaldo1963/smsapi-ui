@@ -9,7 +9,7 @@ import Groups from '../components/Groups'
 class home extends React.Component {
     constructor(props){
         super(props)
-        console.log(this.props.navbarStore.store)
+       
         this.currentTab = this.currentTab.bind(this)
     }
     currentTab(nav) {

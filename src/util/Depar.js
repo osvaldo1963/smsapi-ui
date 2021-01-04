@@ -14,10 +14,28 @@ export default class Department {
         await Promise.all(allData)
         return clean
     }
-    fetchAll(uid, sessid) {
+    fetchById(id) {
         return new Promise(async(resolve, reject) => {
             try {
-                var response = await axios.post(url+"/api/1/deparment/fetch?session="+sessid+"&userid="+uid)
+                var session = localStorage.getItem("session")
+                var json =JSON.parse(session)
+                var response = await axios.post(url+"/api/1/deparment/programid?session="+json.session+"&userid="+json.user_id+"&id="+id)
+                var {data, status} = response
+
+                if(status === 200) {
+                    resolve(data)
+                } else  {
+                    resolve(data)
+                }
+            } catch(error) { reject(error) }
+        })
+    }
+    fetchAll() {
+        return new Promise(async(resolve, reject) => {
+            try {
+                var session = localStorage.getItem("session")
+                var json =JSON.parse(session)
+                var response = await axios.post(url+"/api/1/deparment/fetch?session="+json.session+"&userid="+json.user_id)
                 var {data, status} = response
                 if(status === 200) {
                     var result = this.converArray(data.deparment)
@@ -28,6 +46,21 @@ export default class Department {
                 
             } catch(error) { reject(error) }
             
+        })
+    }
+    create(programid, department) {
+        return new Promise(async(resolve, reject) => {
+            try {
+            var session = localStorage.getItem("session")
+                var json =JSON.parse(session)
+                var response = await axios.post(url+"/api/1/deparment/create?session="+json.session+"&userid="+json.user_id+"&department="+department+"&programid="+programid)
+                var {data, status} = response
+                if(status === 200) {
+                    resolve(data)
+                } else  {
+                    resolve(data)
+                }
+            } catch(error) { reject(error) }
         })
     }
 }

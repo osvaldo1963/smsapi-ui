@@ -14,10 +14,29 @@ export default class Program {
         await Promise.all(allData)
         return clean
     }
-    fetchAll(uid, sessid) {
+
+    create(program) {
         return new Promise(async(resolve, reject) => {
             try {
-                var response = await axios.post(url+"/api/1/program/fetch?session="+sessid+"&userid="+uid)
+            var session = localStorage.getItem("session")
+                var json =JSON.parse(session)
+                var response = await axios.post(url+"/api/1/program/create?session="+json.session+"&userid="+json.user_id+"&program="+program)
+                var {data, status} = response
+                if(status === 200) {
+                    resolve(data)
+                } else  {
+                    resolve(data)
+                }
+            } catch(error) { reject(error) }
+        })
+    }
+    
+    fetchAll() {
+        return new Promise(async(resolve, reject) => {
+            try {
+                var session = localStorage.getItem("session")
+                var json =JSON.parse(session)
+                var response = await axios.post(url+"/api/1/program/fetch?session="+json.session+"&userid="+json.user_id)
                 var {data, status} = response
                 if(status === 200) {
                     var result = this.converArray(data.program)
