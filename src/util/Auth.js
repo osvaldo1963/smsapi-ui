@@ -16,7 +16,7 @@ export default class Auth {
     }
     async Login(email, password) {   
         try {
-            var response = await axios.post(url+"/api/1/login?email="+email+"&pass="+password)
+            var response = await axios.post(url+"/auth/login?email="+email+"&pass="+password)
             var { data, status } = response
             if(status === 200) this.saveSession(data)
             return response
