@@ -19,7 +19,7 @@ export default class Department {
             try {
                 var session = localStorage.getItem("session")
                 var json =JSON.parse(session)
-                var response = await axios.post(url+"/deparment/programid?session="+json.session+"&userid="+json.user_id+"&id="+id)
+                var response = await axios.post(`${url}/deparment/programid?session=${json.session}&userid=${json.user_id}&id=${id}`)
                 var {data, status} = response
 
                 if(status === 200) {
@@ -35,7 +35,7 @@ export default class Department {
             try {
                 var session = localStorage.getItem("session")
                 var json =JSON.parse(session)
-                var response = await axios.post(url+"/deparment/fetch?session="+json.session+"&userid="+json.user_id)
+                var response = await axios.post(`${url}/deparment/fetch?session=${json.session}&userid=${json.user_id}`)
                 var {data, status} = response
                 if(status === 200) {
                     var result = this.converArray(data.deparment)
@@ -53,7 +53,7 @@ export default class Department {
             try {
             var session = localStorage.getItem("session")
                 var json =JSON.parse(session)
-                var response = await axios.post(url+"/deparment/create?session="+json.session+"&userid="+json.user_id+"&department="+department+"&programid="+programid)
+                var response = await axios.post(`${url}/deparment/create?session=${json.session}&userid=${json.user_id}&department=${department}&programid=${programid}`)
                 var {data, status} = response
                 if(status === 200) {
                     resolve(data)
