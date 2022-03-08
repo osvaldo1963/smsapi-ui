@@ -20,8 +20,8 @@ const data = [
     {"name": "julia", "phone":"9717707804", "email": "sdsd", "program":"shelter", "deparrment": "supervisor"}
 ]
 const user = new Users()
+
 class Message extends React.Component {
-    
     constructor(props) {
         super(props)
         this.state = {

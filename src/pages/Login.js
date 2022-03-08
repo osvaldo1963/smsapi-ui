@@ -1,9 +1,9 @@
-import React from 'react'
+import React, { Component } from 'react'
 import { withRouter } from 'react-router-dom'
 import { Grid, Button, Form } from 'semantic-ui-react'
 import Auth from '../util/Auth'
 
-class Login extends React.Component {
+class Login extends Component {
     constructor(props) {
         super(props)
         this.state = {
@@ -24,7 +24,6 @@ class Login extends React.Component {
             var auth = new Auth()
             var response = await auth.Login(this.state.email, this.state.password)
             var  { status } = response
-            console.log(status)
             if(status === 200) this.props.history.push('/home')
         } catch(error) {
             console.log("error on request "+error)
