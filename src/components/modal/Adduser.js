@@ -1,3 +1,4 @@
+/*
 const AddUserModal = () => <Modal open={this.state.openmodal} centered={true}>
     <Modal.Header>Add User Information</Modal.Header>
     <Modal.Content image>
@@ -63,3 +64,4 @@ const AddUserModal = () => <Modal open={this.state.openmodal} centered={true}>
 module.exports = {
     AddUserModal
 }
+*/
